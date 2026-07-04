@@ -1,5 +1,7 @@
 # Universal Contact Form Backend (Node.js + SMTP)
 
+![Universal Contact API Banner](./universal_contact_api_linkedin_mockup.png)
+
 A lightweight, 100% free, self-hosted contact form API server built with **Node.js, Express, and Nodemailer**. This serves as a secure, private alternative to paid form forwarding services like FormSubmit, Web3Forms, or Formspree.
 
 This backend handles incoming submissions for any type of site (blogs, e-commerce storefronts, business landing pages, portfolios), protects your forms from automated robots using a hidden spam honeypot, blocks DDoS floods with IP rate limiting, verifies incoming payloads cryptographically to prevent tampering, sends a beautifully styled notification to you, and automatically delivers a confirmation receipt to your visitors.
@@ -19,7 +21,7 @@ sequenceDiagram
     Note over Browser: 1. Native SHA-256 signature computed<br>with timestamp & secret
     Browser->>Server: HTTP POST (headers: X-Signature, X-Timestamp)
     Note over Server: 2. IP Rate Limit check (5 requests / 15m)<br>3. Honeypot check (botcheck field)<br>4. Replay check (timestamp age < 60s)<br>5. HMAC signature verification
-    
+
     par Dispatch Notification
         Server->>Google: Send Mail (from SMTP, replyTo: Visitor)
         Google->>Inbox: Deliver Inquiry Details
@@ -50,7 +52,7 @@ To send emails through your Gmail account securely, you cannot use your regular 
 3. Under the *How you sign in to Google* section, ensure **2-Step Verification** is turned **ON**.
 4. Click on **2-Step Verification**, scroll to the bottom of the page, and click **App Passwords**.
 5. Give the app a name (e.g. `Website Contact Backend`) and click **Create**.
-6. Google will display a **16-character code** (e.g. `abcd efgh ijkl mnop`). 
+6. Google will display a **16-character code** (e.g. `abcd efgh ijkl mnop`).
 7. **Copy this code!** You will paste this into your environment variables.
 
 ---
@@ -141,7 +143,7 @@ This method intercepts form submissions, runs validation, computes a SHA-256 HMA
     <div class="input-group">
         <textarea id="message" name="message" required placeholder="Your Message" rows="5"></textarea>
     </div>
-    
+
     <button type="submit" id="submit-btn">Send Message</button>
 </form>
 ```
@@ -163,10 +165,10 @@ async function generateSignature(name, email, message, timestamp, secret) {
     const rawData = name.trim() + email.trim() + message.trim() + timestamp + secret;
     const encoder = new TextEncoder();
     const data = encoder.encode(rawData);
-    
+
     // Hash the data using native SubtleCrypto API
     const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
-    
+
     // Convert buffer to hex string
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
@@ -229,7 +231,7 @@ form.addEventListener('submit', async (e) => {
 ---
 
 ### Method B: Standard HTML Action Redirect (Zero-JS)
-*Note: Since standard HTML form redirects cannot compute cryptographic headers natively on submit, you must **remove/leave empty** the `API_SIGNATURE_SECRET` variable in Vercel to allow bypass authentication for this method.*
+*Note: Since HTML form redirects cannot compute cryptographic headers natively on submit, you must **remove/leave empty** the `API_SIGNATURE_SECRET` variable in Vercel to allow bypass authentication for this method.*
 
 ```html
 <!-- Set action to your Vercel server API endpoint -->
