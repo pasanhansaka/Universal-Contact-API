@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Contact Form Backend Tester & Client</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i data-lucide="server-cog"></i>
+                </div>
+                <div>
+                    <h1>Contact Form Backend Hub</h1>
+                    <p class="tagline">Test your custom Node.js & Nodemailer API in real-time</p>
+                </div>
+            </div>
+            <div class="header-badges">
+                <span class="badge badge-primary"><i data-lucide="server"></i> Local API: Port 5000</span>
+                <span class="badge badge-success"><i data-lucide="shield-check"></i> CORS Allowed</span>
+            </div>
+        </header>
+
+        <!-- Main Layout Grid -->
+        <main class="dashboard-grid">
+            
+            <!-- Left Panel: The Contact Form Client (Submitter) -->
+            <section class="preview-panel">
+                <div class="card preview-card">
+                    <div class="preview-badge">Live Contact Form Client</div>
+                    
+                    <div class="demo-form-wrapper">
+                        <form id="contact-form" class="studio-form" novalidate>
+                            <div class="form-title-area">
+                                <h3>Send a Message</h3>
+                                <p>This form submits directly to your local Node.js server endpoint: <code style="color: var(--theme-primary); font-family: monospace;">http://localhost:5000/api/contact</code></p>
+                            </div>
+
+                            <!-- Error Banner -->
+                            <div class="form-alert error-alert hidden" id="error-banner">
+                                <i data-lucide="alert-circle"></i>
+                                <span id="error-banner-text">Required fields are missing.</span>
+                            </div>
+
+                            <!-- Form Inputs -->
+                            <div class="form-fields-container">
+                                <!-- Honeypot Spam Protection (Invisible to humans) -->
+                                <input type="text" name="botcheck" style="display: none;" tabindex="-1" autocomplete="off">
+
+                                <!-- Name -->
+                                <div class="input-group" id="group-name">
+                                    <input type="text" id="contact-name" name="name" required placeholder=" ">
+                                    <label for="contact-name">Full Name</label>
+                                    <i data-lucide="user" class="input-icon"></i>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="input-group" id="group-email">
+                                    <input type="email" id="contact-email" name="email" required placeholder=" ">
+                                    <label for="contact-email">Email Address</label>
+                                    <i data-lucide="mail" class="input-icon"></i>
+                                </div>
+
+                                <!-- Phone -->
+                                <div class="input-group" id="group-phone">
+                                    <input type="tel" id="contact-phone" name="phone" placeholder=" ">
+                                    <label for="contact-phone">Phone Number (Optional)</label>
+                                    <i data-lucide="phone" class="input-icon"></i>
+                                </div>
+
+                                <!-- Subject -->
+                                <div class="input-group" id="group-subject">
+                                    <input type="text" id="contact-subject" name="subject" placeholder=" ">
+                                    <label for="contact-subject">Subject (Optional)</label>
+                                    <i data-lucide="info" class="input-icon"></i>
+                                </div>
+
+                                <!-- Message -->
+                                <div class="input-group textarea-group" id="group-message">
+                                    <textarea id="contact-message" name="message" required placeholder=" " rows="4"></textarea>
+                                    <label for="contact-message">Your Message</label>
+                                    <i data-lucide="message-square" class="input-icon"></i>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="submit-btn" id="submit-btn">
+                                <span class="btn-text">Submit to Local Backend</span>
+                                <i data-lucide="send" class="btn-icon"></i>
+                                <div class="btn-loader hidden"></div>
+                            </button>
+                        </form>
+
+                        <!-- Success Popup -->
+                        <div class="success-overlay hidden" id="success-overlay">
+                            <div class="success-card">
+                                <div class="checkmark-circle">
+                                    <i data-lucide="check"></i>
+                                </div>
+                                <h3>Email Delivered!</h3>
+                                <p>Your message has been processed by your local Express server and sent via Nodemailer to your SMTP mailbox.</p>
+                                <button type="button" class="btn-secondary" id="reset-form-btn">Send Another Message</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Backend Logs & Architecture Guide -->
+            <section class="control-panel">
+                
+                <!-- HTTP Payload Inspector -->
+                <div class="card glass-card">
+                    <div class="card-header">
+                        <i data-lucide="braces"></i>
+                        <h2>HTTP POST Payload Inspector</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="tagline" style="margin-bottom: 12px;">This is the exact JSON body structure that your browser sends to the backend:</p>
+                        <div class="code-box-wrapper" style="margin-bottom: 0;">
+                            <pre style="background: rgba(3, 7, 18, 0.6); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-main); overflow-x: auto;"><code id="payload-display" class="language-json" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #a855f7;">{
+  "name": "Waiting for input...",
+  "email": "Waiting for input...",
+  "phone": "",
+  "subject": "",
+  "message": "Waiting for input..."
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backend Architecture Learning Guide -->
+                <div class="card glass-card">
+                    <div class="card-header">
+                        <i data-lucide="graduation-cap"></i>
+                        <h2>How the Backend Server Processes Data</h2>
+                    </div>
+                    <div class="card-body" style="padding-top: 10px;">
+                        <div class="learning-pipeline">
+                            <!-- Step 1 -->
+                            <div class="pipeline-step active" data-step="1">
+                                <div class="step-num">1</div>
+                                <div class="step-details">
+                                    <h3>CORS Approval (Cross-Origin Resource Sharing)</h3>
+                                    <p>When the browser sends a request from a portfolio site (e.g. <code>localhost:3000</code> or <code>pasan.github.io</code>) to your API server (<code>localhost:5000</code>), Express inspects headers. The <code>cors()</code> middleware tells the browser: "Yes, I allow requests from this domain."</p>
+                                </div>
+                            </div>
+                            <!-- Step 2 -->
+                            <div class="pipeline-step" data-step="2">
+                                <div class="step-num">2</div>
+                                <div class="step-details">
+                                    <h3>Payload Parsing & Validation</h3>
+                                    <p>The Express body parser reads the incoming raw bytes and converts them into a clean JavaScript object: <code>req.body</code>. The server validates that <code>name</code>, <code>email</code>, and <code>message</code> are not empty, returning a <code>400 Bad Request</code> if they are.</p>
+                                </div>
+                            </div>
+                            <!-- Step 3 -->
+                            <div class="pipeline-step" data-step="3">
+                                <div class="step-num">3</div>
+                                <div class="step-details">
+                                    <h3>SMTP Packet Dispatch (Nodemailer)</h3>
+                                    <p>The server connects to your SMTP host (e.g. Gmail / Mailtrap) using secret environment credentials from <code>.env</code>. It creates an email packet where the <code>replyTo</code> header is set to the visitor's email, so you can reply directly to them.</p>
+                                </div>
+                            </div>
+                            <!-- Step 4 -->
+                            <div class="pipeline-step" data-step="4">
+                                <div class="step-num">4</div>
+                                <div class="step-details">
+                                    <h3>Final Mail Delivery</h3>
+                                    <p>The SMTP mail server receives the packet from your Node app, authenticates the sender credentials, and dispatches the email to your personal mailbox (defined in <code>RECEIVER_EMAIL</code>).</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Flow Diagram -->
+                        <div class="flow-diagram-container" style="margin-top: 15px;">
+                            <div class="nodes-flow">
+                                <div class="node active" id="node-client">
+                                    <i data-lucide="monitor"></i>
+                                    <span>Browser</span>
+                                </div>
+                                <div class="flow-line">
+                                    <div class="flow-dot" id="dot-1"></div>
+                                </div>
+                                <div class="node" id="node-api">
+                                    <i data-lucide="server"></i>
+                                    <span>Express API</span>
+                                </div>
+                                <div class="flow-line">
+                                    <div class="flow-dot" id="dot-2"></div>
+                                </div>
+                                <div class="node" id="node-email">
+                                    <i data-lucide="mail"></i>
+                                    <span>Your Inbox</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Custom Node.js Mail Endpoint Client. Built with <i data-lucide="heart" class="heart-icon"></i> for advanced portfolio systems.</p>
+        </footer>
+    </div>
+
+    <!-- Main JavaScript Application -->
+    <script src="app.js"></script>
+</body>
+</html>
